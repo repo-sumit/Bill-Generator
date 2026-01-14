@@ -46,6 +46,19 @@ const billTemplates = {
         },
         headerStyle: "centered",
         tableStyle: "rounded"
+    },
+    
+    template5: {
+        name: "Receipt Style",
+        colors: {
+            primary: "#000000",
+            secondary: "#333333",
+            text: "#000000",
+            lightBg: "#ffffff"
+        },
+        headerStyle: "receipt",
+        tableStyle: "receipt",
+        fontFamily: "courier"
     }
 };
 
@@ -57,8 +70,22 @@ function getTemplateConfig(templateId) {
 // Function to apply template to preview
 function applyTemplateToPreview(templateId) {
     const template = getTemplateConfig(templateId);
-    const previewContent = document.querySelector('.preview-content');
+    const previewArea = document.querySelector('.preview-area');
     
+    if (!previewArea) return;
+    
+    // Check if receipt style
+    if (template.headerStyle === 'receipt') {
+        applyReceiptStylePreview();
+        return;
+    }
+    
+    // Reset to normal preview style if switching from receipt
+    if (previewArea.classList.contains('receipt-style')) {
+        resetNormalPreview();
+    }
+    
+    const previewContent = document.querySelector('.preview-content');
     if (!previewContent) return;
     
     // Update CSS variables for the preview
@@ -90,10 +117,251 @@ function applyTemplateToPreview(templateId) {
     }
 }
 
+// Apply receipt-style preview
+function applyReceiptStylePreview() {
+    const previewArea = document.querySelector('.preview-area');
+    const previewContent = document.querySelector('.preview-content');
+    
+    if (!previewArea || !previewContent) return;
+    
+    previewArea.classList.add('receipt-style');
+    previewContent.className = 'receipt-preview';
+    
+    // Create receipt structure
+    previewContent.innerHTML = `
+        <div class="receipt-header">WELCOME!!!</div>
+        <div class="receipt-txn" id="receiptTxnNo">TXN NO: INV-001</div>
+        <div class="receipt-station-name" id="receiptStationName">FUEL STATION NAME</div>
+        <div class="receipt-address" id="receiptAddress">Station Address</div>
+        <div class="receipt-contact" id="receiptContact"></div>
+        
+        <div class="receipt-divider">- - - - - - - - - - - - - - - - - - - - -</div>
+        
+        <div class="receipt-section">
+            <div class="receipt-row" id="receiptReceiptNo">Receipt No.: INV-001</div>
+        </div>
+        
+        <div class="receipt-divider">- - - - - - - - - - - - - - - - - - - - -</div>
+        
+        <div class="receipt-section">
+            <div class="receipt-row" id="receiptProduct">PRODUCT: Petrol  RATE/LTR: ₹ 0.00</div>
+            <div class="receipt-row" id="receiptAmount">AMOUNT: ₹ 0.00</div>
+            <div class="receipt-row" id="receiptVolume">VOLUME(LTR.): 0.00 lt</div>
+        </div>
+        
+        <div class="receipt-divider">- - - - - - - - - - - - - - - - - - - - -</div>
+        
+        <div class="receipt-section">
+            <div class="receipt-row" id="receiptVehType">VEH TYPE: -</div>
+            <div class="receipt-row" id="receiptVehNo">VEH NO: -</div>
+            <div class="receipt-row" id="receiptCustomer">CUSTOMER NAME: -</div>
+        </div>
+        
+        <div class="receipt-divider">- - - - - - - - - - - - - - - - - - - - -</div>
+        
+        <div class="receipt-section">
+            <div class="receipt-row" id="receiptDateTime">Date: -      Time: -</div>
+        </div>
+        
+        <div class="receipt-divider">- - - - - - - - - - - - - - - - - - - - -</div>
+        
+        <div class="receipt-section">
+            <div class="receipt-row" id="receiptMode">MODE: -</div>
+        </div>
+        
+        <div class="receipt-footer">
+            <div>SAVE FUEL YAANI SAVE MONEY</div>
+            <div>!! THANKS FOR FUELLING WITH US. YOU CAN NOW</div>
+            <div>CALL US ON 603353 (TOLL-FREE) FOR QUERIES/</div>
+            <div>COMPLAINTS.</div>
+        </div>
+    `;
+    
+    // Update with current form data
+    updateReceiptPreview();
+}
+
+// Reset to normal preview
+function resetNormalPreview() {
+    const previewArea = document.querySelector('.preview-area');
+    // Find the preview content - might be .receipt-preview or .preview-content
+    let previewContent = previewArea ? previewArea.querySelector('.preview-content, .receipt-preview') : null;
+    
+    if (!previewArea) return;
+    
+    previewArea.classList.remove('receipt-style');
+    
+    // If previewContent doesn't exist or is wrong class, create new one
+    if (!previewContent || previewContent.classList.contains('receipt-preview')) {
+        // Clear and create new preview-content div
+        previewArea.innerHTML = '';
+        previewContent = document.createElement('div');
+        previewContent.className = 'preview-content';
+        previewArea.appendChild(previewContent);
+    } else {
+        previewContent.className = 'preview-content';
+    }
+    
+    // Restore normal preview structure
+    previewContent.innerHTML = `
+        <div class="preview-header">
+            <div class="preview-logo" id="previewLogo">
+                <div class="logo-placeholder">LOGO</div>
+            </div>
+            <div class="preview-station-info">
+                <h3 id="previewStationName">Fuel Station Name</h3>
+                <p id="previewStationAddress">Station Address</p>
+            </div>
+        </div>
+        <div class="preview-divider"></div>
+        <div class="preview-invoice">
+            <div class="preview-row">
+                <span class="preview-label">Receipt No:</span>
+                <span id="previewInvoiceNumber">INV-001</span>
+            </div>
+            <div class="preview-row">
+                <span class="preview-label">Date:</span>
+                <span id="previewDate">-</span>
+            </div>
+            <div class="preview-row">
+                <span class="preview-label">Time:</span>
+                <span id="previewTime">-</span>
+            </div>
+        </div>
+        <div class="preview-divider"></div>
+        <div class="preview-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Rate/LTR</th>
+                        <th>Volume</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Fuel</td>
+                        <td id="previewRate"><span id="previewCurrency">₹</span> 0.00</td>
+                        <td id="previewVolume">0.00 L</td>
+                        <td id="previewAmount"><span id="previewCurrency2">₹</span> 0.00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="preview-divider"></div>
+        <div class="preview-customer">
+            <div class="preview-row">
+                <span class="preview-label">Vehicle Type:</span>
+                <span id="previewVehicleType">-</span>
+            </div>
+            <div class="preview-row">
+                <span class="preview-label">Vehicle No:</span>
+                <span id="previewVehicleNumber">-</span>
+            </div>
+            <div class="preview-row">
+                <span class="preview-label">Customer:</span>
+                <span id="previewCustomerName">-</span>
+            </div>
+            <div class="preview-row">
+                <span class="preview-label">Payment:</span>
+                <span id="previewPaymentMethod">-</span>
+            </div>
+            <div class="preview-row" id="previewTaxRow" style="display: none;">
+                <span class="preview-label" id="previewTaxLabel">Tax:</span>
+                <span id="previewTaxNumber">-</span>
+            </div>
+        </div>
+        <div class="preview-divider"></div>
+        <div class="preview-footer">
+            <p>Thank you for your business!</p>
+            <p class="small">Please visit again</p>
+        </div>
+    `;
+}
+
+// Update receipt preview with form data
+function updateReceiptPreview() {
+    const previewArea = document.querySelector('.preview-area');
+    if (!previewArea || !previewArea.classList.contains('receipt-style')) return;
+    
+    // Get form values
+    const stationName = document.getElementById('stationName').value || 'FUEL STATION NAME';
+    const stationAddress = document.getElementById('stationAddress').value || 'Station Address';
+    const contactNumber = document.getElementById('contactNumber')?.value || '';
+    const invoiceNumber = document.getElementById('invoiceNumber').value || 'INV-001';
+    const taxOption = document.querySelector('input[name="taxOption"]:checked')?.value || 'None';
+    const taxNumber = document.getElementById('taxNumber')?.value || '';
+    const productType = document.getElementById('productType')?.value || 'Petrol';
+    const currency = document.getElementById('currency').value;
+    const fuelRate = parseFloat(document.getElementById('fuelRate').value) || 0;
+    const totalAmount = parseFloat(document.getElementById('totalAmount').value) || 0;
+    const volume = fuelRate > 0 ? (totalAmount / fuelRate).toFixed(2) : '0.00';
+    const vehicleType = document.getElementById('vehicleType').value || '-';
+    const vehicleNumber = document.getElementById('vehicleNumber').value || '-';
+    const customerName = document.getElementById('customerName').value || '-';
+    const fuelDate = document.getElementById('fuelDate').value;
+    const fuelTime = document.getElementById('fuelTime').value;
+    const paymentMethod = document.getElementById('paymentMethod').value || '-';
+    
+    // Update receipt elements
+    const txnNo = taxOption === 'TXN NO' && taxNumber ? taxNumber : invoiceNumber;
+    const receiptTxnNo = document.getElementById('receiptTxnNo');
+    if (receiptTxnNo) receiptTxnNo.textContent = `TXN NO: ${txnNo}`;
+    
+    const receiptStationName = document.getElementById('receiptStationName');
+    if (receiptStationName) receiptStationName.textContent = stationName.toUpperCase();
+    
+    const receiptAddress = document.getElementById('receiptAddress');
+    if (receiptAddress) receiptAddress.textContent = stationAddress.toUpperCase();
+    
+    const receiptContact = document.getElementById('receiptContact');
+    if (receiptContact) receiptContact.textContent = contactNumber;
+    
+    const receiptReceiptNo = document.getElementById('receiptReceiptNo');
+    if (receiptReceiptNo) receiptReceiptNo.textContent = `Receipt No.: ${invoiceNumber}`;
+    
+    const receiptProduct = document.getElementById('receiptProduct');
+    // Note: Spaces used for alignment to mimic thermal receipt format (monospace font)
+    if (receiptProduct) receiptProduct.textContent = `PRODUCT: ${productType}     RATE/LTR: ${currency} ${fuelRate.toFixed(2)}`;
+    
+    const receiptAmount = document.getElementById('receiptAmount');
+    if (receiptAmount) receiptAmount.textContent = `AMOUNT: ${currency} ${totalAmount.toFixed(2)}`;
+    
+    const receiptVolume = document.getElementById('receiptVolume');
+    if (receiptVolume) receiptVolume.textContent = `VOLUME(LTR.): ${volume} lt`;
+    
+    const receiptVehType = document.getElementById('receiptVehType');
+    if (receiptVehType) receiptVehType.textContent = `VEH TYPE: ${vehicleType}`;
+    
+    const receiptVehNo = document.getElementById('receiptVehNo');
+    if (receiptVehNo) receiptVehNo.textContent = `VEH NO: ${vehicleNumber}`;
+    
+    const receiptCustomer = document.getElementById('receiptCustomer');
+    if (receiptCustomer) receiptCustomer.textContent = `CUSTOMER NAME: ${customerName.toUpperCase()}`;
+    
+    const receiptDateTime = document.getElementById('receiptDateTime');
+    if (receiptDateTime) {
+        const dateStr = fuelDate ? formatDateForReceipt(fuelDate) : '-';
+        const timeStr = fuelTime || '-';
+        // Note: Spaces for alignment to match thermal receipt format
+        receiptDateTime.textContent = `Date: ${dateStr}      Time: ${timeStr}`;
+    }
+    
+    const receiptMode = document.getElementById('receiptMode');
+    if (receiptMode) receiptMode.textContent = `MODE: ${paymentMethod}`;
+}
+
 // Function to generate PDF with template styling
 function generatePDFWithTemplate(templateId, data) {
     const template = getTemplateConfig(templateId);
     const { jsPDF } = window.jspdf;
+    
+    // Handle receipt style template differently
+    if (template.headerStyle === "receipt") {
+        return generateReceiptStylePDF(template, data);
+    }
+    
     const doc = new jsPDF();
     
     // Set template colors
@@ -262,6 +530,125 @@ function generatePDFWithTemplate(templateId, data) {
     doc.setFont(undefined, 'normal');
     doc.setTextColor(textRGB.r, textRGB.g, textRGB.b);
     doc.text('Please visit again', 105, yPosition, { align: 'center' });
+    
+    return doc;
+}
+
+// Function to generate receipt-style PDF
+function generateReceiptStylePDF(template, data) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    // Set monospace font (courier)
+    doc.setFont("courier");
+    
+    const centerX = 105; // Center of page
+    let yPosition = 20;
+    
+    // Welcome header
+    doc.setFontSize(12);
+    doc.setFont("courier", "bold");
+    doc.setTextColor(0, 0, 0);
+    doc.text('WELCOME!!!', 105, yPosition, { align: 'center' });
+    yPosition += 8;
+    
+    // Transaction number
+    doc.setFontSize(9);
+    doc.setFont("courier", 'normal');
+    const txnNo = data.taxOption === 'TXN NO' && data.taxNumber ? data.taxNumber : data.invoiceNumber;
+    doc.text(`TXN NO: ${txnNo}`, 105, yPosition, { align: 'center' });
+    yPosition += 7;
+    
+    // Station name (uppercase and centered)
+    doc.setFont('courier', 'bold');
+    doc.setFontSize(11);
+    const stationLines = doc.splitTextToSize(data.stationName.toUpperCase(), 75);
+    stationLines.forEach(line => {
+        doc.text(line, 105, yPosition, { align: 'center' });
+        yPosition += 5;
+    });
+    
+    // Station address
+    doc.setFont('courier', 'normal');
+    doc.setFontSize(9);
+    const addressLines = doc.splitTextToSize(data.stationAddress.toUpperCase(), 70);
+    addressLines.forEach(line => {
+        doc.text(line, 105, yPosition, { align: 'center' });
+        yPosition += 4;
+    });
+    
+    // Contact number if provided
+    if (data.contactNumber) {
+        yPosition += 2;
+        doc.text(data.contactNumber, 105, yPosition, { align: 'center' });
+        yPosition += 5;
+    }
+    
+    // Empty line
+    yPosition += 3;
+    
+    // Receipt number
+    doc.setFont('courier', 'normal');
+    doc.setFontSize(9);
+    doc.text(`Receipt No.: ${data.receiptNumber || data.invoiceNumber}`, 105, yPosition, { align: 'center' });
+    yPosition += 6;
+    
+    // Dashed line
+    doc.text('- - - - - - - - - - - - - - - - - - - - - - - - - - - -', 105, yPosition, { align: 'center' });
+    yPosition += 6;
+    
+    // Product details (spaces for alignment in monospace font)
+    const productType = data.productType || 'Petrol';
+    doc.text(`PRODUCT: ${productType}     RATE/LTR: ${data.currency} ${data.fuelRate}`, 105, yPosition, { align: 'center' });
+    yPosition += 5;
+    doc.text(`AMOUNT: ${data.currency} ${data.totalAmount}`, 105, yPosition, { align: 'center' });
+    yPosition += 5;
+    doc.text(`VOLUME(LTR.): ${data.volume} lt`, 105, yPosition, { align: 'center' });
+    yPosition += 6;
+    
+    // Dashed line
+    doc.text('- - - - - - - - - - - - - - - - - - - - - - - - - - - -', 105, yPosition, { align: 'center' });
+    yPosition += 6;
+    
+    // Vehicle details
+    doc.text(`VEH TYPE: ${data.vehicleType}`, 105, yPosition, { align: 'center' });
+    yPosition += 5;
+    doc.text(`VEH NO: ${data.vehicleNumber}`, 105, yPosition, { align: 'center' });
+    yPosition += 5;
+    doc.text(`CUSTOMER NAME: ${data.customerName.toUpperCase()}`, 105, yPosition, { align: 'center' });
+    yPosition += 6;
+    
+    // Dashed line
+    doc.text('- - - - - - - - - - - - - - - - - - - - - - - - - - - -', 105, yPosition, { align: 'center' });
+    yPosition += 6;
+    
+    // Date and time (spaces for alignment in monospace font)
+    const receiptDate = data.receiptDate || data.date;
+    const receiptTime = data.receiptTime || data.time;
+    doc.text(`Date: ${receiptDate}      Time: ${receiptTime}`, 105, yPosition, { align: 'center' });
+    yPosition += 6;
+    
+    // Dashed line
+    doc.text('- - - - - - - - - - - - - - - - - - - - - - - - - - - -', 105, yPosition, { align: 'center' });
+    yPosition += 6;
+    
+    // Payment mode
+    doc.text(`MODE: ${data.paymentMethod}`, 105, yPosition, { align: 'center' });
+    yPosition += 8;
+    
+    // Footer message
+    doc.setFontSize(8);
+    const footerLines = [
+        'SAVE FUEL YAANI SAVE MONEY',
+        '!! THANKS FOR FUELLING WITH US. YOU CAN NOW',
+        '   CALL US ON 603353 (TOLL-FREE) FOR QUERIES/',
+        '                  COMPLAINTS.'
+    ];
+    
+    footerLines.forEach(line => {
+        doc.text(line, 105, yPosition, { align: 'center' });
+        yPosition += 4;
+    });
     
     return doc;
 }

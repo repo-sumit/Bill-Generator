@@ -36,6 +36,10 @@
                             <input type="radio" name="template" value="template4">
                             <span>Template 4</span>
                         </label>
+                        <label class="radio-label">
+                            <input type="radio" name="template" value="template5">
+                            <span>Receipt Style</span>
+                        </label>
                     </div>
                 </div>
 
@@ -49,6 +53,21 @@
                     <div class="input-group">
                         <label for="stationAddress">Fuel Station Address *</label>
                         <textarea id="stationAddress" rows="3" placeholder="Enter station address" required></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="contactNumber">Contact Number (Optional)</label>
+                        <input type="text" id="contactNumber" placeholder="e.g., 9501843053">
+                        <small class="helper-text">For receipt-style template</small>
+                    </div>
+                    <div class="input-group">
+                        <label for="productType">Product Type (Optional)</label>
+                        <select id="productType">
+                            <option value="Petrol">Petrol</option>
+                            <option value="Diesel">Diesel</option>
+                            <option value="CNG">CNG</option>
+                            <option value="LPG">LPG</option>
+                        </select>
+                        <small class="helper-text">For receipt-style template</small>
                     </div>
                     <div class="input-group">
                         <label for="paymentMethod">Payment Method *</label>

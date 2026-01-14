@@ -81,7 +81,7 @@ function setupEventListeners() {
     
     // Form inputs - update preview on change
     const formInputs = [
-        'stationName', 'stationAddress', 'paymentMethod', 'invoiceNumber',
+        'stationName', 'stationAddress', 'contactNumber', 'productType', 'paymentMethod', 'invoiceNumber',
         'fuelRate', 'totalAmount', 'fuelDate', 'fuelTime',
         'customerName', 'vehicleNumber', 'vehicleType', 'currency', 
         'logoUrl', 'taxNumber'
@@ -151,6 +151,13 @@ function updateLogoPreview(logoSrc) {
 
 // Update live preview
 function updatePreview() {
+    // Check if receipt style is active
+    const previewArea = document.querySelector('.preview-area');
+    if (previewArea && previewArea.classList.contains('receipt-style')) {
+        updateReceiptPreview();
+        return;
+    }
+    
     // Station details
     const stationName = document.getElementById('stationName').value || 'Fuel Station Name';
     const stationAddress = document.getElementById('stationAddress').value || 'Station Address';
@@ -242,6 +249,15 @@ function formatDate(dateStr) {
     const date = new Date(dateStr);
     const options = { year: 'numeric', month: 'short', day: 'numeric' };
     return date.toLocaleDateString('en-US', options);
+}
+
+// Format date as DD/MM/YYYY for receipt
+function formatDateForReceipt(dateStr) {
+    const date = new Date(dateStr);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
 }
 
 // Validate form before generating PDF
@@ -415,6 +431,8 @@ async function generatePDF() {
         const formData = {
             stationName: document.getElementById('stationName').value,
             stationAddress: document.getElementById('stationAddress').value,
+            contactNumber: document.getElementById('contactNumber')?.value || '',
+            productType: document.getElementById('productType')?.value || 'Petrol',
             paymentMethod: document.getElementById('paymentMethod').value,
             invoiceNumber: document.getElementById('invoiceNumber').value,
             currency: document.getElementById('currency').value,
@@ -422,7 +440,9 @@ async function generatePDF() {
             totalAmount: parseFloat(document.getElementById('totalAmount').value).toFixed(2),
             volume: (parseFloat(document.getElementById('totalAmount').value) / parseFloat(document.getElementById('fuelRate').value)).toFixed(2),
             date: formatDate(document.getElementById('fuelDate').value),
+            receiptDate: formatDateForReceipt(document.getElementById('fuelDate').value),
             time: document.getElementById('fuelTime').value,
+            receiptTime: document.getElementById('fuelTime').value,
             customerName: document.getElementById('customerName').value,
             vehicleNumber: document.getElementById('vehicleNumber').value,
             vehicleType: document.getElementById('vehicleType').value,
