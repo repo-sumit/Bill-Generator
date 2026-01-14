@@ -148,18 +148,23 @@ function updatePreview() {
     // Station details
     const stationName = document.getElementById('stationName').value || 'Fuel Station Name';
     const stationAddress = document.getElementById('stationAddress').value || 'Station Address';
-    document.getElementById('previewStationName').textContent = stationName;
-    document.getElementById('previewStationAddress').textContent = stationAddress;
+    const stationNameElem = document.getElementById('previewStationName');
+    const stationAddressElem = document.getElementById('previewStationAddress');
+    if (stationNameElem) stationNameElem.textContent = stationName;
+    if (stationAddressElem) stationAddressElem.textContent = stationAddress;
     
     // Invoice details
     const invoiceNumber = document.getElementById('invoiceNumber').value || 'INV-001';
-    document.getElementById('previewInvoiceNumber').textContent = invoiceNumber;
+    const invoiceElem = document.getElementById('previewInvoiceNumber');
+    if (invoiceElem) invoiceElem.textContent = invoiceNumber;
     
     // Date and time
     const fuelDate = document.getElementById('fuelDate').value;
     const fuelTime = document.getElementById('fuelTime').value;
-    document.getElementById('previewDate').textContent = fuelDate ? formatDate(fuelDate) : '-';
-    document.getElementById('previewTime').textContent = fuelTime || '-';
+    const dateElem = document.getElementById('previewDate');
+    const timeElem = document.getElementById('previewTime');
+    if (dateElem) dateElem.textContent = fuelDate ? formatDate(fuelDate) : '-';
+    if (timeElem) timeElem.textContent = fuelTime || '-';
     
     // Currency and amounts
     const currency = document.getElementById('currency').value;
@@ -167,11 +172,18 @@ function updatePreview() {
     const totalAmount = parseFloat(document.getElementById('totalAmount').value) || 0;
     const volume = fuelRate > 0 ? (totalAmount / fuelRate).toFixed(2) : '0.00';
     
-    document.getElementById('previewCurrency').textContent = currency;
-    document.getElementById('previewCurrency2').textContent = currency;
-    document.getElementById('previewRate').innerHTML = `<span>${currency}</span> ${fuelRate.toFixed(2)}`;
-    document.getElementById('previewVolume').textContent = `${volume} L`;
-    document.getElementById('previewAmount').innerHTML = `<span>${currency}</span> ${totalAmount.toFixed(2)}`;
+    const currencyElem = document.getElementById('previewCurrency');
+    const currencyElem2 = document.getElementById('previewCurrency2');
+    if (currencyElem) currencyElem.textContent = currency;
+    if (currencyElem2) currencyElem2.textContent = currency;
+    
+    const rateElem = document.getElementById('previewRate');
+    const volumeElem = document.getElementById('previewVolume');
+    const amountElem = document.getElementById('previewAmount');
+    
+    if (rateElem) rateElem.innerHTML = `<span id="previewCurrency">${currency}</span> ${fuelRate.toFixed(2)}`;
+    if (volumeElem) volumeElem.textContent = `${volume} L`;
+    if (amountElem) amountElem.innerHTML = `<span id="previewCurrency2">${currency}</span> ${totalAmount.toFixed(2)}`;
     
     // Customer details
     const vehicleType = document.getElementById('vehicleType').value || '-';
@@ -179,22 +191,31 @@ function updatePreview() {
     const customerName = document.getElementById('customerName').value || '-';
     const paymentMethod = document.getElementById('paymentMethod').value || '-';
     
-    document.getElementById('previewVehicleType').textContent = vehicleType;
-    document.getElementById('previewVehicleNumber').textContent = vehicleNumber;
-    document.getElementById('previewCustomerName').textContent = customerName;
-    document.getElementById('previewPaymentMethod').textContent = paymentMethod;
+    const vehicleTypeElem = document.getElementById('previewVehicleType');
+    const vehicleNumberElem = document.getElementById('previewVehicleNumber');
+    const customerNameElem = document.getElementById('previewCustomerName');
+    const paymentMethodElem = document.getElementById('previewPaymentMethod');
+    
+    if (vehicleTypeElem) vehicleTypeElem.textContent = vehicleType;
+    if (vehicleNumberElem) vehicleNumberElem.textContent = vehicleNumber;
+    if (customerNameElem) customerNameElem.textContent = customerName;
+    if (paymentMethodElem) paymentMethodElem.textContent = paymentMethod;
     
     // Tax information
     const taxOption = document.querySelector('input[name="taxOption"]:checked').value;
     const taxNumber = document.getElementById('taxNumber').value;
     const taxRow = document.getElementById('previewTaxRow');
     
-    if (taxOption !== 'None' && taxNumber) {
-        taxRow.style.display = 'flex';
-        document.getElementById('previewTaxLabel').textContent = taxOption + ':';
-        document.getElementById('previewTaxNumber').textContent = taxNumber;
-    } else {
-        taxRow.style.display = 'none';
+    if (taxRow) {
+        if (taxOption !== 'None' && taxNumber) {
+            taxRow.style.display = 'flex';
+            const taxLabelElem = document.getElementById('previewTaxLabel');
+            const taxNumberElem = document.getElementById('previewTaxNumber');
+            if (taxLabelElem) taxLabelElem.textContent = taxOption + ':';
+            if (taxNumberElem) taxNumberElem.textContent = taxNumber;
+        } else {
+            taxRow.style.display = 'none';
+        }
     }
     
     // Logo update
