@@ -434,6 +434,67 @@ header h1 {
     font-weight: 400;
 }
 
+.preview-footer .small {
+    font-size: 0.85em;
+    color: #6c757d;
+    font-weight: 400;
+}
+
+/* Receipt Style Preview */
+.receipt-preview {
+    font-family: 'Courier New', Courier, monospace;
+    background: white;
+    padding: 20px;
+    max-width: 320px;
+    margin: 0 auto;
+    text-align: center;
+    font-size: 0.85em;
+    line-height: 1.4;
+    color: #000;
+    border: 1px solid #ddd;
+}
+
+.receipt-preview .receipt-header {
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-bottom: 8px;
+}
+
+.receipt-preview .receipt-txn {
+    font-size: 0.9em;
+    margin-bottom: 5px;
+}
+
+.receipt-preview .receipt-station-name {
+    font-weight: bold;
+    margin: 8px 0 3px 0;
+}
+
+.receipt-preview .receipt-address {
+    font-size: 0.85em;
+    margin-bottom: 5px;
+}
+
+.receipt-preview .receipt-divider {
+    margin: 10px 0;
+    color: #666;
+    letter-spacing: 2px;
+}
+
+.receipt-preview .receipt-section {
+    margin: 10px 0;
+}
+
+.receipt-preview .receipt-row {
+    margin: 3px 0;
+}
+
+.receipt-preview .receipt-footer {
+    font-size: 0.75em;
+    margin-top: 15px;
+    line-height: 1.3;
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
     .main-content {
