@@ -322,6 +322,7 @@ function updateReceiptPreview() {
     if (receiptReceiptNo) receiptReceiptNo.textContent = `Receipt No.: ${invoiceNumber}`;
     
     const receiptProduct = document.getElementById('receiptProduct');
+    // Note: Spaces used for alignment to mimic thermal receipt format (monospace font)
     if (receiptProduct) receiptProduct.textContent = `PRODUCT: ${productType}     RATE/LTR: ${currency} ${fuelRate.toFixed(2)}`;
     
     const receiptAmount = document.getElementById('receiptAmount');
@@ -343,20 +344,12 @@ function updateReceiptPreview() {
     if (receiptDateTime) {
         const dateStr = fuelDate ? formatDateForReceipt(fuelDate) : '-';
         const timeStr = fuelTime || '-';
+        // Note: Spaces for alignment to match thermal receipt format
         receiptDateTime.textContent = `Date: ${dateStr}      Time: ${timeStr}`;
     }
     
     const receiptMode = document.getElementById('receiptMode');
     if (receiptMode) receiptMode.textContent = `MODE: ${paymentMethod}`;
-}
-
-// Format date as DD/MM/YYYY for receipt
-function formatDateForReceipt(dateStr) {
-    const date = new Date(dateStr);
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
 }
 
 // Function to generate PDF with template styling
@@ -604,7 +597,7 @@ function generateReceiptStylePDF(template, data) {
     doc.text('- - - - - - - - - - - - - - - - - - - - - - - - - - - -', 105, yPosition, { align: 'center' });
     yPosition += 6;
     
-    // Product details
+    // Product details (spaces for alignment in monospace font)
     const productType = data.productType || 'Petrol';
     doc.text(`PRODUCT: ${productType}     RATE/LTR: ${data.currency} ${data.fuelRate}`, 105, yPosition, { align: 'center' });
     yPosition += 5;
@@ -629,7 +622,7 @@ function generateReceiptStylePDF(template, data) {
     doc.text('- - - - - - - - - - - - - - - - - - - - - - - - - - - -', 105, yPosition, { align: 'center' });
     yPosition += 6;
     
-    // Date and time
+    // Date and time (spaces for alignment in monospace font)
     const receiptDate = data.receiptDate || data.date;
     const receiptTime = data.receiptTime || data.time;
     doc.text(`Date: ${receiptDate}      Time: ${receiptTime}`, 105, yPosition, { align: 'center' });
