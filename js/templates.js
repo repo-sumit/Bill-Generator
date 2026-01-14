@@ -198,7 +198,7 @@ function generatePDFWithTemplate(templateId, data) {
     };
     
     if (template.tableStyle === "striped") {
-        tableStyles.alternateRowStyles.fillColor = [secondaryRGB.r, secondaryRGB.g, secondaryRGB.b, 10];
+        tableStyles.alternateRowStyles.fillColor = [secondaryRGB.r, secondaryRGB.g, secondaryRGB.b];
     } else if (template.tableStyle === "minimal") {
         tableStyles.lineColor = [200, 200, 200];
         tableStyles.lineWidth = 0.1;
@@ -266,6 +266,9 @@ function generatePDFWithTemplate(templateId, data) {
 
 // Utility function to convert hex to RGB
 function hexToRgb(hex) {
+    if (!hex || typeof hex !== 'string') {
+        return { r: 0, g: 0, b: 0 };
+    }
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result ? {
         r: parseInt(result[1], 16),

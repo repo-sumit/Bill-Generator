@@ -295,7 +295,14 @@ function showMessage(message, isError = true) {
     // Create message element
     const messageDiv = document.createElement('div');
     messageDiv.className = isError ? 'error-message' : 'success-message';
-    messageDiv.textContent = message;
+    
+    // Handle message formatting
+    if (typeof message === 'string' && message.includes('\n')) {
+        // Convert newlines to HTML breaks
+        messageDiv.innerHTML = message.replace(/\n/g, '<br>');
+    } else {
+        messageDiv.textContent = message;
+    }
     
     // Insert before generate button
     const generateBtn = document.getElementById('generateBtn');
@@ -358,10 +365,13 @@ function imageUrlToBase64(url) {
                 const dataURL = canvas.toDataURL('image/png');
                 resolve(dataURL);
             } catch (e) {
-                reject(e);
+                console.warn('CORS error loading image:', e);
+                reject(new Error('Unable to load image due to CORS restrictions. Please use a different image or upload from device.'));
             }
         };
-        img.onerror = reject;
+        img.onerror = function() {
+            reject(new Error('Failed to load image from URL. Please check the URL and try again.'));
+        };
         img.src = url;
     });
 }
