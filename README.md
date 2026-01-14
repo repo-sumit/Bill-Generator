@@ -250,5 +250,3 @@ For issues, questions, or suggestions, please open an issue in the repository.
 - Icons and design inspired by modern web standards
 
 ---
-
-**Note**: This application generates professional, watermark-free PDFs suitable for business use. Always ensure you have proper authorization to use any logos or branding in your bills.
