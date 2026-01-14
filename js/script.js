@@ -137,7 +137,13 @@ function handleLogoUpload(e) {
 function updateLogoPreview(logoSrc) {
     const previewLogo = document.getElementById('previewLogo');
     if (logoSrc && logoSrc.trim() !== '') {
-        previewLogo.innerHTML = `<img src="${logoSrc}" alt="Logo">`;
+        // Clear existing content
+        previewLogo.innerHTML = '';
+        // Create img element safely
+        const img = document.createElement('img');
+        img.src = logoSrc;
+        img.alt = 'Logo';
+        previewLogo.appendChild(img);
     } else {
         previewLogo.innerHTML = '<div class="logo-placeholder">LOGO</div>';
     }

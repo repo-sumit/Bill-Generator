@@ -180,6 +180,7 @@ function generatePDFWithTemplate(templateId, data) {
     ];
     
     // Apply table style based on template
+    // jsPDF 2.5.1+ uses RGB arrays [r, g, b] format for fillColor
     let tableStyles = {
         headStyles: {
             fillColor: [primaryRGB.r, primaryRGB.g, primaryRGB.b],
@@ -198,6 +199,7 @@ function generatePDFWithTemplate(templateId, data) {
     };
     
     if (template.tableStyle === "striped") {
+        // Use lighter shade of secondary color for striped rows
         tableStyles.alternateRowStyles.fillColor = [secondaryRGB.r, secondaryRGB.g, secondaryRGB.b];
     } else if (template.tableStyle === "minimal") {
         tableStyles.lineColor = [200, 200, 200];
