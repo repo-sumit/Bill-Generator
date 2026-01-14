@@ -70,9 +70,9 @@ function getTemplateConfig(templateId) {
 // Function to apply template to preview
 function applyTemplateToPreview(templateId) {
     const template = getTemplateConfig(templateId);
-    const previewContent = document.querySelector('.preview-content');
+    const previewArea = document.querySelector('.preview-area');
     
-    if (!previewContent) return;
+    if (!previewArea) return;
     
     // Check if receipt style
     if (template.headerStyle === 'receipt') {
@@ -81,10 +81,12 @@ function applyTemplateToPreview(templateId) {
     }
     
     // Reset to normal preview style if switching from receipt
-    const previewArea = document.querySelector('.preview-area');
-    if (previewArea && previewArea.classList.contains('receipt-style')) {
+    if (previewArea.classList.contains('receipt-style')) {
         resetNormalPreview();
     }
+    
+    const previewContent = document.querySelector('.preview-content');
+    if (!previewContent) return;
     
     // Update CSS variables for the preview
     const root = document.documentElement;
