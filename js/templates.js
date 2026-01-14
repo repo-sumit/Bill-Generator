@@ -182,12 +182,23 @@ function applyReceiptStylePreview() {
 // Reset to normal preview
 function resetNormalPreview() {
     const previewArea = document.querySelector('.preview-area');
-    const previewContent = document.querySelector('.preview-content');
+    // Find the preview content - might be .receipt-preview or .preview-content
+    let previewContent = previewArea ? previewArea.querySelector('.preview-content, .receipt-preview') : null;
     
-    if (!previewArea || !previewContent) return;
+    if (!previewArea) return;
     
     previewArea.classList.remove('receipt-style');
-    previewContent.className = 'preview-content';
+    
+    // If previewContent doesn't exist or is wrong class, create new one
+    if (!previewContent || previewContent.classList.contains('receipt-preview')) {
+        // Clear and create new preview-content div
+        previewArea.innerHTML = '';
+        previewContent = document.createElement('div');
+        previewContent.className = 'preview-content';
+        previewArea.appendChild(previewContent);
+    } else {
+        previewContent.className = 'preview-content';
+    }
     
     // Restore normal preview structure
     previewContent.innerHTML = `
